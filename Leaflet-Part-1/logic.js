@@ -120,43 +120,44 @@ d3.json(queryUrl).then(function (data) {
         collapsed: false,
       })
       .addTo(myMap);
+
+    // -------------------------------------------------------------------
+    // Set up the legend.
+    // color function to be used when creating the legend
+    function getColor(d) {
+      return d > 5
+        ? "#140300"
+        : d > 4
+        ? "#fd2d03"
+        : d > 3
+        ? "#fdbc03"
+        : d > 2
+        ? "#F9FD69"
+        : d > 1
+        ? "#04fc10"
+        : "#00ffcc";
+    }
+
+    // Add legend to the map
+    let legend = L.control({ position: "bottomright" });
+    legend.onAdd = function (map) {
+      let div = L.DomUtil.create("div", "info legend"),
+        mags = ["0", "1", "2", "3", "4", "5"],
+        labels = [];
+
+      for (let i = 0; i < mags.length; i++) {
+        div.innerHTML +=
+          '<i style="background:' +
+          getColor(mags[i] + 1) +
+          '"></i> ' +
+          mags[i] +
+          (mags[i + 1] ? "&ndash;" + mags[i + 1] + "<br>" : "+");
+      }
+      return div;
+      legend.addTo(myMap);
+      // //-------------------------------------------------------------------
+    };
   }
 });
 
-// -------------------------------------------------------------------
-// Set up the legend.
-// color function to be used when creating the legend
-function getColor(d) {
-  return d > 5
-    ? "#140300"
-    : d > 4
-    ? "#fd2d03"
-    : d > 3
-    ? "#fdbc03"
-    : d > 2
-    ? "#F9FD69"
-    : d > 1
-    ? "#04fc10"
-    : "#00ffcc";
-}
 
-// Add legend to the map
-let legend = L.control({ position: "bottomright" });
-legend.onAdd = function (map) {
-  let div = L.DomUtil.create("div", "info legend"),
-    mags = ["0", "1", "2", "3", "4", "5"],
-    labels = [];
-
-  for (let i = 0; i < mags.length; i++) {
-    div.innerHTML +=
-      '<i style="background:' +
-      getColor(mags[i] + 1) +'"></i> ' +
-      mags[i] +(mags[i + 1] ? "&ndash;" + mags[i + 1] + "<br>" : "+");
-  }
-  return div;
-legend.addTo(myMap);
-};
-
-
-
-// //-------------------------------------------------------------------
