@@ -42,10 +42,9 @@ function circleColor(depthFromSurface) {
     return "#fd2d03" // Red
   }
   else {
-    return "#140300" // Black
+    return "brown" // Black
   }
 }
-
 
 // -------------------------------------------------------------------
 
@@ -59,7 +58,6 @@ function circleColor(depthFromSurface) {
 
 
   let earthquakes = L.geoJSON(earthquakeData, {
-    console.log(earthquakeData),
     pointToLayer: function(earthquakeData, latlng) {
       return L.circle(latlng, {
         radius: radiusSize(earthquakeData.properties.mag),
@@ -88,6 +86,21 @@ function createMap(earthquakes) {
     attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
   });
 
+// -------------------------------------------------------------------
+// This is only for Part 2
+  let tectonicPlates = new L.LayerGroup();
+  
+
+  d3.json(
+    "https://raw.githubusercontent.com/fraxen/tectonicplates/master/GeoJSON/PB2002_boundaries.json")
+    .then(function (tectonicPlateData) {
+    L.geoJson(tectonicPlateData).addTo(tectonicPlates);
+    tectonicPlates.addTo(myMap);
+    console.log(tectonicPlates);
+  });
+// -------------------------------------------------------------------
+
+
   // Create a baseMaps object.
   let baseMaps = {
     "Street Map": street,
@@ -96,7 +109,8 @@ function createMap(earthquakes) {
 
   // Create an overlay object to hold our overlay.
   let overlayMaps = {
-    Earthquakes: earthquakes
+    Earthquakes: earthquakes,
+    "Tectonic_Plates": tectonicPlates,// This is only for Part 2
   };
 
   // Create our map, giving it the streetmap and earthquakes layers to display on load.
