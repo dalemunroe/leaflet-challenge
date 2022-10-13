@@ -25,18 +25,18 @@ d3.json(queryUrl).then(function (data) {
 
     // Define function to set the circle color based on the depth of epicentre, earthquakes with greater depth from surface (elevation) should appear darker in colour
     function circleColor(depthFromSurface) {
-      if (depthFromSurface < -500) {
+      if (depthFromSurface > 90) {
         return "#00ffcc"; // cyan
-      } else if (depthFromSurface < -400) {
+      } else if (depthFromSurface > 70) {
         return "#04fc10"; // Green
-      } else if (depthFromSurface < -300) {
+      } else if (depthFromSurface > 50) {
         return "#F9FD69"; // Yellow
-      } else if (depthFromSurface < -200) {
+      } else if (depthFromSurface > 30) {
         return "#fdbc03"; // Orange
-      } else if (depthFromSurface < -100) {
+      } else if (depthFromSurface > 10) {
         return "#fd2d03"; // Red
       } else {
-        return "brown"; // Black
+        return "black"; // Black
       }
     }
 
@@ -53,8 +53,8 @@ d3.json(queryUrl).then(function (data) {
         return L.circle(latlng, {
           radius: radiusSize(earthquakeData.properties.mag),
           //color: circleColor(earthquakeData.properties.mag), //circleColor(earthquakeData.properties.mag),
-          color: circleColor(earthquakeData.geometry.coordinates[2]),
-          fillOpacity: 0.5,
+          fillColor: circleColor(earthquakeData.geometry.coordinates[2]),
+          fillOpacity: 0.65,
           stroke: false,
         });
       },
@@ -87,10 +87,11 @@ d3.json(queryUrl).then(function (data) {
     d3.json(
       "https://raw.githubusercontent.com/fraxen/tectonicplates/master/GeoJSON/PB2002_boundaries.json"
     ).then(function (tectonicPlateData) {
-      L.geoJson(tectonicPlateData).addTo(tectonicPlates);
-      tectonicPlates.addTo(myMap);
-      console.log(tectonicPlates);
-    });
+      L.geoJson(tectonicPlateData,{
+      colour : "#00ff00"})
+      .addTo(tectonicPlates);
+      tectonicPlates.addTo(myMap)
+      });
     // -------------------------------------------------------------------
 
     // Create a baseMaps object.
@@ -109,7 +110,7 @@ d3.json(queryUrl).then(function (data) {
     let myMap = L.map("map", {
       center: [0, 20.0],
       zoom: 2.5,
-      layers: [topo, earthquakes],
+      layers: [street, earthquakes],
     });
 
     // Create a layer control.
@@ -125,38 +126,32 @@ d3.json(queryUrl).then(function (data) {
     // Set up the legend.
     // color function to be used when creating the legend
     function getColor(d) {
-      return d > 5
-        ? "#140300"
-        : d > 4
-        ? "#fd2d03"
-        : d > 3
-        ? "#fdbc03"
-        : d > 2
-        ? "#F9FD69"
-        : d > 1
-        ? "#04fc10"
-        : "#00ffcc";
+      return d > 90 ? "##00ffcc"
+        : d > 70 ? "#04fc10"
+        : d > 50 ? "#F9FD69"
+        : d > 30 ? "#fdbc03"
+        : d > 10 ? "#fd2d03"
+        : "#black";
     }
 
     // Add legend to the map
     let legend = L.control({ position: "bottomright" });
-    legend.onAdd = function (map) {
+    legend.onAdd = function () {
       let div = L.DomUtil.create("div", "info legend"),
-        mags = ["0", "1", "2", "3", "4", "5"],
+        legendScale = ["-10", "10", "30", "50", "70", "90"],
         labels = [];
 
-      for (let i = 0; i < mags.length; i++) {
+      for (let i = 0; i < legendScale.length; i++) {
         div.innerHTML +=
-          '<i style="background:' +
-          getColor(mags[i] + 1) +
-          '"></i> ' +
-          mags[i] +
-          (mags[i + 1] ? "&ndash;" + mags[i + 1] + "<br>" : "+");
+          "<i style='background:" +
+          getColor(legendScale[i] + 1) + "'></i> " + legendScale[i] +
+          (legendScale[i + 1] ? "&ndash;" + legendScale[i + 1] + "<br>" : "+");
       }
       return div;
-      legend.addTo(myMap);
       // //-------------------------------------------------------------------
+
     };
+    legend.addTo(myMap);
   }
 });
 
