@@ -17,7 +17,6 @@ d3.json(queryUrl).then(function (data) {
     Date Time: ${new Date(feature.properties.time)}</h4>`);
     }
 
-    // -------------------------------------------------------------------
     // Define function to create the circle radius based on the magnitude
     function radiusSize(magnitude) {
       return magnitude * 50000;
@@ -40,13 +39,8 @@ d3.json(queryUrl).then(function (data) {
       }
     }
 
-    // -------------------------------------------------------------------
-
     // Create a GeoJSON layer that contains the features array on the earthquakeData object.
     // Run the onEachFeature function once for each piece of data in the array.
-    // let earthquakes = L.geoJSON(earthquakeData, {
-    //   onEachFeature: onEachFeature
-    // });
 
     let earthquakes = L.geoJSON(earthquakeData, {
       pointToLayer: function (earthquakeData, latlng) {
@@ -80,8 +74,7 @@ d3.json(queryUrl).then(function (data) {
         'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)',
     });
 
-    // -------------------------------------------------------------------
-    // This is only for Part 2
+    // TLoad the techtonic plate layer
     let tectonicPlates = new L.LayerGroup();
 
     d3.json(
@@ -93,7 +86,6 @@ d3.json(queryUrl).then(function (data) {
       .addTo(tectonicPlates);
       tectonicPlates.addTo(myMap)
       });
-    // -------------------------------------------------------------------
 
     // Create a baseMaps object.
     let baseMaps = {
@@ -115,18 +107,13 @@ d3.json(queryUrl).then(function (data) {
     });
 
     // Create a layer control.
-    // Pass it our baseMaps and overlayMaps.
-    // Add the layer control to the map.
     L.control
       .layers(baseMaps, overlayMaps, {
         collapsed: false,
       })
       .addTo(myMap);
 
-    // -------------------------------------------------------------------
     // Set up the legend.
-    // color function to be used when creating the legend
-    // Add legend to the map
     let legend = L.control({ position: "bottomright" });
     legend.onAdd = function () {
       let div = L.DomUtil.create("div", "info legend"),
@@ -149,7 +136,6 @@ d3.json(queryUrl).then(function (data) {
           (legendScale[i + 1] ? "&ndash;" + legendScale[i + 1] + "<br>" : "+");
       }
       return div;
-      //-------------------------------------------------------------------
 
     };
     legend.addTo(myMap);
