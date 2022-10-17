@@ -26,17 +26,17 @@ d3.json(queryUrl).then(function (data) {
     // Define function to set the circle color based on the depth of epicentre, earthquakes with greater depth from surface (elevation) should appear darker in colour
     function circleColor(depthFromSurface) {
       if (depthFromSurface > 90) {
-        return "#00ffcc"; // cyan
+        return "rgb(62,0,0)"; 
       } else if (depthFromSurface > 70) {
-        return "#04fc10"; // Green
+        return "rgb(100,19,16)"; 
       } else if (depthFromSurface > 50) {
-        return "#F9FD69"; // Yellow
+        return "rgb(138,34,31)";
       } else if (depthFromSurface > 30) {
-        return "#fdbc03"; // Orange
+        return "rgb(176,49,46)";
       } else if (depthFromSurface > 10) {
-        return "#fd2d03"; // Red
+        return "rgb(214,64,61)";
       } else {
-        return "black"; // Black
+        return "rgb(252,79,76)";
       }
     }
 
@@ -88,7 +88,8 @@ d3.json(queryUrl).then(function (data) {
       "https://raw.githubusercontent.com/fraxen/tectonicplates/master/GeoJSON/PB2002_boundaries.json"
     ).then(function (tectonicPlateData) {
       L.geoJson(tectonicPlateData,{
-      colour : "#00ff00"})
+      weight: 2,
+      color : "rgb(34,34,4)"})
       .addTo(tectonicPlates);
       tectonicPlates.addTo(myMap)
       });
@@ -125,30 +126,30 @@ d3.json(queryUrl).then(function (data) {
     // -------------------------------------------------------------------
     // Set up the legend.
     // color function to be used when creating the legend
-    function getColor(d) {
-      return d > 90 ? "##00ffcc"
-        : d > 70 ? "#04fc10"
-        : d > 50 ? "#F9FD69"
-        : d > 30 ? "#fdbc03"
-        : d > 10 ? "#fd2d03"
-        : "#black";
-    }
-
     // Add legend to the map
     let legend = L.control({ position: "bottomright" });
     legend.onAdd = function () {
       let div = L.DomUtil.create("div", "info legend"),
         legendScale = ["-10", "10", "30", "50", "70", "90"],
-        labels = [];
+
+        labels = ["rgb(252,79,76)", 
+                  "rgb(214,64,61)", 
+                  "rgb(176,49,46)", 
+                  "rgb(138,34,31)",
+                  "rgb(100,19,16)",
+                  "rgb(62,0,0)",
+                ];
 
       for (let i = 0; i < legendScale.length; i++) {
         div.innerHTML +=
+        // "<h1> Depth from Surface </h1>"
           "<i style='background:" +
-          getColor(legendScale[i] + 1) + "'></i> " + legendScale[i] +
+
+          labels[i] + "'></i> " + legendScale[i] +
           (legendScale[i + 1] ? "&ndash;" + legendScale[i + 1] + "<br>" : "+");
       }
       return div;
-      // //-------------------------------------------------------------------
+      //-------------------------------------------------------------------
 
     };
     legend.addTo(myMap);
